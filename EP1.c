@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 struct Vertice {
     double x;
@@ -47,6 +48,7 @@ void CriaPoligono(int n, Poligono* poligono) {
 void PrintaLista(Poligono poligono) {
     struct Vertice* ultimovertice = poligono;
     printf("%lf %lf\n", ultimovertice->x, ultimovertice->y);
+
     while (ultimovertice->prox != poligono) {
         ultimovertice = ultimovertice->prox;
         printf("%lf %lf\n", ultimovertice->x, ultimovertice->y);
@@ -57,16 +59,48 @@ void PrintaLista(Poligono poligono) {
 int NumeroDeVertices(Poligono P) {
     int numero = 1;
     struct Vertice* vertice = P;
+
     while (vertice->prox != P) {
         numero += 1;
         vertice = vertice->prox;
     }
+
     return numero;
 }
 
 double Distancia(struct Vertice* A, struct Vertice* B) {
-
+    return sqrt((A->x - B->x)*(A->x - B->x) + (A->y - B->y)*(A->y - B->y));
 }
+
+double Perimetro(Poligono P) {
+    struct Vertice* vertice = P;
+    double perimetro = 0;
+
+    do {
+        perimetro += Distancia(vertice, vertice->prox);
+        vertice = vertice->prox;
+    } while (vertice != P);
+
+    return perimetro;
+}
+
+double Area(Poligono P) {
+    double area = 0;
+    struct Vertice* vertice = P;
+
+    do {
+        area += (vertice->y)*(vertice->prox->x) / 2;
+        area -= (vertice->x)*(vertice->prox->y) / 2;
+        vertice = vertice->prox;
+    } while (vertice != P);
+
+    if (area < 0) {
+        area = area * (-1);
+    }
+
+    return area;
+}
+
 
 int main() {
     int numerodevertices;
@@ -74,6 +108,6 @@ int main() {
 
     scanf("%d", &numerodevertices);
     CriaPoligono(numerodevertices, &poligono);
-    PrintaLista(poligono);
-    printf("%d", NumeroDeVertices(poligono));
+    printf("Perimetro: %.1lf\n", Perimetro(poligono));
+    printf("Area: %.1lf\n", Area(poligono));
 }
