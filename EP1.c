@@ -17,7 +17,7 @@ typedef struct Vertice* Poligono;
 struct Vertice* CriaVertice() {
     double a, b;
     scanf("%lf %lf", &a , &b);
-    struct Vertice *vertice = (struct Vertice*) malloc(sizeof(struct Vertice*));
+    struct Vertice *vertice = (struct Vertice*) malloc(sizeof(struct Vertice));
     vertice->x = a;
     vertice->y = b;
     return vertice;
@@ -101,6 +101,17 @@ double Area(Poligono P) {
     return area;
 }
 
+void DeletaVerticeRecursivamente(Poligono P, struct Vertice* V) {
+    if (V->prox != P) {
+        DeletaVerticeRecursivamente(P, V->prox);
+    }
+    free(V);
+}
+
+void LiberaPoligono(Poligono P) {
+    DeletaVerticeRecursivamente(P, P);
+}
+
 
 int main() {
     int numerodevertices;
@@ -110,4 +121,5 @@ int main() {
     CriaPoligono(numerodevertices, &poligono);
     printf("Perimetro: %.1lf\n", Perimetro(poligono));
     printf("Area: %.1lf\n", Area(poligono));
+    LiberaPoligono(poligono);
 }
